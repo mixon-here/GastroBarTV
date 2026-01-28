@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { HashRouter, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
-import { AppConfig, MenuScreen, PromoScreen } from './types';
+import { AppConfig, MenuScreen, PromoScreen, User } from './types';
 import { getData } from './services/dataService';
 import MenuBoard from './components/MenuBoard';
 import PromoBoard from './components/PromoBoard';
 import AdminPanel from './components/AdminPanel';
 import Login from './components/Login';
 
-// TV View Component handled inside App to share state logic easier or keep it simple
 const TVDisplay: React.FC<{ config: AppConfig }> = ({ config }) => {
   const [currentScreenIndex, setCurrentScreenIndex] = useState(0);
   const navigate = useNavigate();
@@ -16,7 +15,6 @@ const TVDisplay: React.FC<{ config: AppConfig }> = ({ config }) => {
     if (config.screens.length === 0) return;
 
     const currentScreen = config.screens[currentScreenIndex];
-    // Use screen-specific duration or fallback to default
     const duration = (currentScreen.duration || config.defaultDuration) * 1000;
 
     const timer = setInterval(() => {
@@ -41,7 +39,6 @@ const TVDisplay: React.FC<{ config: AppConfig }> = ({ config }) => {
 
   return (
     <div className="h-screen w-screen bg-[#0c0a09] overflow-hidden relative selection:bg-yellow-500 selection:text-black">
-        {/* Simple fade effect container */}
         <div key={screen.id} className="h-full w-full">
             {screen.type === 'MENU' ? (
                 <MenuBoard screen={screen as MenuScreen} />
@@ -50,7 +47,6 @@ const TVDisplay: React.FC<{ config: AppConfig }> = ({ config }) => {
             )}
         </div>
         
-        {/* Progress bar at bottom */}
         <div className="absolute bottom-0 left-0 h-2 bg-stone-800 w-full z-10">
             <div 
                 className="h-full bg-yellow-600 transition-all ease-linear shadow-[0_0_10px_rgba(202,138,4,0.5)]"
@@ -61,7 +57,6 @@ const TVDisplay: React.FC<{ config: AppConfig }> = ({ config }) => {
                     transformOrigin: 'left'
                 }}
                 ref={(el) => {
-                    // Reset animation trick
                     if(el) {
                         el.style.transition = 'none';
                         el.style.transform = 'scaleX(1)';
@@ -74,11 +69,9 @@ const TVDisplay: React.FC<{ config: AppConfig }> = ({ config }) => {
             />
         </div>
 
-        {/* Secret Admin Button - Bottom Right */}
         <div 
             onClick={() => navigate('/admin')}
             className="absolute bottom-0 right-0 w-16 h-16 z-50 cursor-pointer flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-300 group"
-            title="Открыть панель управления"
         >
             <div className="bg-stone-800/80 p-3 rounded-tl-xl text-yellow-500 shadow-lg backdrop-blur-sm border-t border-l border-stone-700">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 animate-spin-slow">
@@ -91,32 +84,43 @@ const TVDisplay: React.FC<{ config: AppConfig }> = ({ config }) => {
   );
 };
 
-// Protected Admin Route
 const ProtectedAdmin: React.FC<{ config: AppConfig, onUpdate: (c: AppConfig) => void }> = ({ config, onUpdate }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
 
-  // Check session storage for persisting login during refresh (optional)
   useEffect(() => {
-      if(sessionStorage.getItem('auth') === 'true') {
-          setIsAuthenticated(true);
+      // Check for persisted session in session storage
+      const savedSession = sessionStorage.getItem('authUser');
+      if(savedSession) {
+          try {
+              const user = JSON.parse(savedSession);
+              // Validate user still exists in config
+              const validUser = config.users.find(u => u.id === user.id);
+              if (validUser) {
+                  setCurrentUser(validUser);
+              } else {
+                  sessionStorage.removeItem('authUser');
+              }
+          } catch (e) {
+              sessionStorage.removeItem('authUser');
+          }
       }
-  }, []);
+  }, [config.users]);
 
-  const handleLogin = () => {
-      setIsAuthenticated(true);
-      sessionStorage.setItem('auth', 'true');
+  const handleLogin = (user: User) => {
+      setCurrentUser(user);
+      sessionStorage.setItem('authUser', JSON.stringify(user));
   };
 
   const handleLogout = () => {
-      setIsAuthenticated(false);
-      sessionStorage.removeItem('auth');
+      setCurrentUser(null);
+      sessionStorage.removeItem('authUser');
   };
 
-  if (!isAuthenticated) {
-    return <Login onLogin={handleLogin} expectedPassword={config.adminPassword} />;
+  if (!currentUser) {
+    return <Login config={config} onLogin={handleLogin} />;
   }
 
-  return <AdminPanel initialConfig={config} onUpdate={onUpdate} onLogout={handleLogout} />;
+  return <AdminPanel initialConfig={config} currentUser={currentUser} onUpdate={onUpdate} onLogout={handleLogout} />;
 };
 
 const App: React.FC = () => {
@@ -129,13 +133,8 @@ const App: React.FC = () => {
   return (
     <HashRouter>
       <Routes>
-        {/* The main TV display route */}
         <Route path="/" element={<TVDisplay config={config} />} />
-        
-        {/* Admin Panel route */}
         <Route path="/admin" element={<ProtectedAdmin config={config} onUpdate={handleConfigUpdate} />} />
-        
-        {/* Fallback */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </HashRouter>

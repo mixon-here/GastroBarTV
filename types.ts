@@ -3,7 +3,7 @@ export interface Dish {
   name: string;
   weight: string;
   price: number;
-  isHalfPortion: boolean; // If true, display logic calculates /2
+  isHalfPortion: boolean;
 }
 
 export interface Category {
@@ -17,7 +17,7 @@ export type ScreenType = 'MENU' | 'PROMO';
 export interface BaseScreen {
   id: string;
   type: ScreenType;
-  duration: number; // Duration in seconds
+  duration: number;
 }
 
 export interface MenuScreen extends BaseScreen {
@@ -28,13 +28,22 @@ export interface MenuScreen extends BaseScreen {
 export interface PromoScreen extends BaseScreen {
   type: 'PROMO';
   text: string;
-  qrUrl: string; // URL to generate QR for
+  qrUrl: string;
 }
 
 export type ScreenItem = MenuScreen | PromoScreen;
 
+export type UserRole = 'ADMIN' | 'OPERATOR';
+
+export interface User {
+  id: string;
+  username: string;
+  password: string; // Simple storage for this requirement
+  role: UserRole;
+}
+
 export interface AppConfig {
   screens: ScreenItem[];
   defaultDuration: number;
-  adminPassword?: string; // Stored in localstorage for simple auth
+  users: User[]; // New field for user management
 }

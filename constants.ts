@@ -1,8 +1,11 @@
-import { AppConfig, ScreenItem } from './types';
+import { AppConfig } from './types';
 
 export const DEFAULT_CONFIG: AppConfig = {
   defaultDuration: 20,
-  adminPassword: 'admin',
+  users: [
+    { id: 'u1', username: 'admin', password: '123', role: 'ADMIN' },
+    { id: 'u2', username: 'operator', password: '123', role: 'OPERATOR' }
+  ],
   screens: [
     {
       id: 'screen-1',

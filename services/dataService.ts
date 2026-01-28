@@ -1,13 +1,21 @@
-import { AppConfig } from '../types';
+import { AppConfig, User } from '../types';
 import { DEFAULT_CONFIG } from '../constants';
 
 const STORAGE_KEY = 'gastroboard_data_v1';
 
 export const getData = (): AppConfig => {
   try {
-    const data = localStorage.getItem(STORAGE_KEY);
-    if (data) {
-      return JSON.parse(data);
+    const dataStr = localStorage.getItem(STORAGE_KEY);
+    if (dataStr) {
+      const data = JSON.parse(dataStr);
+      
+      // Migration: If users array is missing (old version), add it
+      if (!data.users || !Array.isArray(data.users)) {
+        data.users = DEFAULT_CONFIG.users;
+        // Optionally migrate old adminPassword if it exists, but simple reset is safer
+      }
+      
+      return data;
     }
   } catch (e) {
     console.error('Failed to parse data', e);
