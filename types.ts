@@ -20,7 +20,7 @@ export interface BaseScreen {
   duration: number;
   contentScale?: number;
   rotation?: 0 | 90 | 180 | 270;
-  repeatCount?: number; // New field for playlist logic
+  displayFrequency?: number; // 1 = every loop, 2 = every 2nd loop, etc.
 }
 
 export interface MenuScreen extends BaseScreen {

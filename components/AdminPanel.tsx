@@ -26,8 +26,8 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ initialConfig, currentUser, onU
   // --- Screen Handlers ---
   const addScreen = (type: 'MENU' | 'PROMO') => {
     const newScreen: ScreenItem = type === 'MENU' 
-      ? { id: generateId(), type: 'MENU', duration: config.defaultDuration, contentScale: 1, rotation: 0, repeatCount: 1, categories: [] }
-      : { id: generateId(), type: 'PROMO', duration: config.defaultDuration, contentScale: 1, rotation: 0, repeatCount: 1, text: 'ЗАГОЛОВОК АКЦИИ', qrUrl: 'https://example.com' };
+      ? { id: generateId(), type: 'MENU', duration: config.defaultDuration, contentScale: 1, rotation: 0, displayFrequency: 1, categories: [] }
+      : { id: generateId(), type: 'PROMO', duration: config.defaultDuration, contentScale: 1, rotation: 0, displayFrequency: 1, text: 'ЗАГОЛОВОК АКЦИИ', qrUrl: 'https://example.com' };
 
     setConfig(prev => ({ ...prev, screens: [...prev.screens, newScreen] }));
     setActiveScreenIndex(config.screens.length);
@@ -184,8 +184,10 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ initialConfig, currentUser, onU
                         <div className="truncate flex items-center">
                             <span className="text-xs font-mono bg-black/30 px-1.5 py-0.5 rounded mr-3 text-stone-500">{idx + 1}</span>
                             <span className="text-sm font-medium text-stone-300">{screen.type === 'MENU' ? 'Меню' : 'Промо'}</span>
-                            {(screen.repeatCount && screen.repeatCount > 1) && (
-                                <span className="ml-auto text-[10px] bg-yellow-600/20 text-yellow-500 px-1.5 rounded border border-yellow-600/50">x{screen.repeatCount}</span>
+                            {(screen.displayFrequency && screen.displayFrequency > 1) && (
+                                <span className="ml-auto text-[10px] bg-blue-900/40 text-blue-300 px-1.5 rounded border border-blue-800/50 whitespace-nowrap">
+                                    1/{screen.displayFrequency}
+                                </span>
                             )}
                         </div>
                         <div className="flex space-x-1 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -223,14 +225,14 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ initialConfig, currentUser, onU
                                 />
                             </div>
                              <div>
-                                <label className="block text-xs text-yellow-600 uppercase font-bold mb-2">Повторов за цикл</label>
+                                <label className="block text-xs text-yellow-600 uppercase font-bold mb-2">Показывать каждый N-й</label>
                                 <input 
                                     type="number" min="1" 
                                     className="w-full bg-stone-900 border border-stone-600 rounded p-2 focus:border-yellow-600 focus:outline-none text-stone-200 font-mono text-lg"
-                                    value={currentScreen.repeatCount || 1}
-                                    onChange={(e) => updateScreen(activeScreenIndex, { repeatCount: parseInt(e.target.value) || 1 })}
+                                    value={currentScreen.displayFrequency || 1}
+                                    onChange={(e) => updateScreen(activeScreenIndex, { displayFrequency: parseInt(e.target.value) || 1 })}
                                 />
-                                <p className="text-[9px] text-stone-500 mt-1">Сколько раз показать этот экран подряд</p>
+                                <p className="text-[9px] text-stone-500 mt-1">1 = всегда, 2 = через круг</p>
                             </div>
                             <div>
                                 <label className="block text-xs text-yellow-600 uppercase font-bold mb-2">Ориентация экрана</label>

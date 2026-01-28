@@ -9,36 +9,56 @@ import Login from './components/Login';
 
 const TVDisplay: React.FC<{ config: AppConfig }> = ({ config }) => {
   const [currentScreenIndex, setCurrentScreenIndex] = useState(0);
-  const [currentRepeat, setCurrentRepeat] = useState(0);
+  const [loopCount, setLoopCount] = useState(1); // Global loop counter, starts at 1
   const navigate = useNavigate();
 
   useEffect(() => {
     if (config.screens.length === 0) return;
 
-    // Reset index if out of bounds (e.g. after deletion)
-    if (currentScreenIndex >= config.screens.length) {
-      setCurrentScreenIndex(0);
-      setCurrentRepeat(0);
-      return;
-    }
-
     const currentScreen = config.screens[currentScreenIndex];
     const duration = (currentScreen.duration || config.defaultDuration) * 1000;
-    const maxRepeats = currentScreen.repeatCount || 1;
 
     const timer = setTimeout(() => {
-      if (currentRepeat < maxRepeats - 1) {
-        // Increment repeat counter, stay on same screen
-        setCurrentRepeat((prev) => prev + 1);
-      } else {
-        // Reset repeats and move to next screen
-        setCurrentRepeat(0);
-        setCurrentScreenIndex((prev) => (prev + 1) % config.screens.length);
-      }
+        let nextIndex = currentScreenIndex + 1;
+        let nextLoop = loopCount;
+        let attempts = 0;
+        const maxAttempts = config.screens.length * 10; // Safety break
+
+        // Find next valid screen to show
+        while (attempts < maxAttempts) {
+            if (nextIndex >= config.screens.length) {
+                nextIndex = 0;
+                nextLoop++;
+            }
+
+            const candidateScreen = config.screens[nextIndex];
+            const frequency = candidateScreen.displayFrequency || 1;
+            
+            // Logic: Show if (Loop Number - 1) % Frequency == 0
+            // Loop 1 (freq 1): 0%1=0 (Show)
+            // Loop 1 (freq 2): 0%2=0 (Show)
+            // Loop 2 (freq 1): 1%1=0 (Show)
+            // Loop 2 (freq 2): 1%2=1 (Skip)
+            if ((nextLoop - 1) % frequency === 0) {
+                setLoopCount(nextLoop);
+                setCurrentScreenIndex(nextIndex);
+                break;
+            }
+            
+            nextIndex++;
+            attempts++;
+        }
+        
+        // Fallback if nothing found (should theoretically not happen if logic is sound)
+        if (attempts >= maxAttempts) {
+            setLoopCount(nextLoop + 1);
+            setCurrentScreenIndex(0);
+        }
+
     }, duration);
 
     return () => clearTimeout(timer);
-  }, [currentScreenIndex, currentRepeat, config]);
+  }, [currentScreenIndex, loopCount, config]);
 
   if (config.screens.length === 0) {
     return (
@@ -55,8 +75,7 @@ const TVDisplay: React.FC<{ config: AppConfig }> = ({ config }) => {
 
   return (
     <div className="h-screen w-screen bg-[#0c0a09] overflow-hidden relative selection:bg-yellow-500 selection:text-black">
-        {/* Using key with repeat count forces re-render of components and animations when repeating the same screen */}
-        <div key={`${screen.id}-${currentRepeat}`} className="h-full w-full">
+        <div key={`${screen.id}-${loopCount}`} className="h-full w-full">
             {screen.type === 'MENU' ? (
                 <MenuBoard screen={screen as MenuScreen} />
             ) : (
@@ -65,9 +84,8 @@ const TVDisplay: React.FC<{ config: AppConfig }> = ({ config }) => {
         </div>
         
         <div className="absolute bottom-0 left-0 h-2 bg-stone-800 w-full z-10">
-            {/* Progress bar also needs unique key to restart animation on repeat */}
             <div 
-                key={`${screen.id}-${currentRepeat}-progress`}
+                key={`${screen.id}-${loopCount}-progress`}
                 className="h-full bg-yellow-600 transition-all ease-linear shadow-[0_0_10px_rgba(202,138,4,0.5)]"
                 style={{ 
                     width: '100%', 
