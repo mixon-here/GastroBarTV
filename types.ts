@@ -18,6 +18,7 @@ export interface BaseScreen {
   id: string;
   type: ScreenType;
   duration: number;
+  contentScale?: number; // New field for manual scaling
 }
 
 export interface MenuScreen extends BaseScreen {
@@ -45,5 +46,5 @@ export interface User {
 export interface AppConfig {
   screens: ScreenItem[];
   defaultDuration: number;
-  users: User[]; // New field for user management
+  users: User[];
 }

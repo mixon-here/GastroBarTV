@@ -6,45 +6,39 @@ interface MenuBoardProps {
 }
 
 const DishRow: React.FC<{ dish: Dish }> = ({ dish }) => {
-  // Logic for half portions display
-  // Try to parse weight to number for calculation, otherwise append /2 logic visually if simple
   const weightNum = parseInt(dish.weight);
   
   let displayWeight = dish.weight;
   let displayPrice = `${dish.price}`;
 
   if (dish.isHalfPortion) {
-    // If weight is "350г", we try to make it "350/175г"
     if (!isNaN(weightNum)) {
       displayWeight = `${weightNum}/${Math.round(weightNum / 2)}г`;
     } else {
-      // Fallback if weight is text like "1 шт"
       displayWeight = `${dish.weight}/½`;
     }
-
-    // Price: "300/150"
     displayPrice = `${dish.price}/${Math.round(dish.price / 2)}`;
   }
 
   return (
-    <div className="flex items-end justify-between py-2 mb-4 w-full">
-      {/* Name Section */}
-      <div className="shrink-0 max-w-[50%]">
-        <span className="text-3xl md:text-4xl font-bold tracking-wide text-stone-100 uppercase leading-none">
+    <div className="flex items-end justify-between py-1 mb-2 w-full">
+      {/* Name Section - Oswald Font */}
+      <div className="shrink-0 max-w-[60%]">
+        <span className="text-[3.5vh] font-display font-semibold tracking-wide text-stone-100 uppercase leading-none">
           {dish.name}
         </span>
       </div>
 
       {/* Dots Leader */}
-      <div className="grow mx-4 mb-2 border-b-4 border-dotted border-stone-600 opacity-60 relative top-[-6px]"></div>
+      <div className="grow mx-3 mb-2 border-b-4 border-dotted border-stone-600 opacity-50 relative top-[-0.6vh]"></div>
       
       {/* Price & Weight Section */}
       <div className="shrink-0 flex items-center space-x-6 whitespace-nowrap">
-        <span className="text-2xl md:text-3xl text-stone-400 font-medium">
+        <span className="text-[2.5vh] text-stone-400 font-medium font-sans mt-1">
           {displayWeight}
         </span>
-        <span className="text-3xl md:text-4xl font-bold text-yellow-500">
-          {displayPrice} <span className="font-bold text-stone-400">₽</span>
+        <span className="text-[3.5vh] font-bold text-yellow-500 font-sans leading-none">
+          {displayPrice} <span className="font-bold text-stone-500 ml-1">₽</span>
         </span>
       </div>
     </div>
@@ -52,27 +46,41 @@ const DishRow: React.FC<{ dish: Dish }> = ({ dish }) => {
 };
 
 const MenuBoard: React.FC<MenuBoardProps> = ({ screen }) => {
+  const scale = screen.contentScale || 1;
+
   return (
-    <div className="w-full h-full p-8 md:p-16 flex flex-col justify-center animate-fade-in bg-[#0c0a09]">
-      <div className="flex flex-col h-full justify-center gap-16 max-w-[90%] mx-auto w-full">
-        {screen.categories.map((cat) => (
-          <div key={cat.id} className="flex flex-col">
-            {/* Category Title */}
-            <div className="flex items-center mb-10">
-                <div className="h-10 w-2 bg-yellow-600 mr-4 rounded-full"></div>
-                <h2 className="text-5xl md:text-6xl font-black text-stone-200 uppercase tracking-widest shadow-black drop-shadow-lg">
-                {cat.title}
-                </h2>
+    <div className="w-full h-full bg-[#0c0a09] flex flex-col items-center justify-center overflow-hidden animate-fade-in relative">
+      {/* Scalable Container */}
+      <div 
+        className="w-[90%] flex flex-col justify-center"
+        style={{ 
+            transform: `scale(${scale})`, 
+            transformOrigin: 'center center',
+            // Using max-height to ensure it respects screen boundaries
+            maxHeight: '100vh',
+            height: 'auto'
+        }}
+      >
+        <div className="flex flex-col gap-[6vh]">
+          {screen.categories.map((cat) => (
+            <div key={cat.id} className="flex flex-col">
+              {/* Category Title - Oswald */}
+              <div className="flex items-center mb-[2vh]">
+                  <div className="h-[5vh] w-2 bg-yellow-600 mr-4 rounded-full"></div>
+                  <h2 className="text-[6vh] font-display font-bold text-stone-100 uppercase tracking-widest leading-none drop-shadow-lg">
+                  {cat.title}
+                  </h2>
+              </div>
+              
+              {/* Dishes List */}
+              <div className="space-y-1 w-full">
+                {cat.dishes.map((dish) => (
+                  <DishRow key={dish.id} dish={dish} />
+                ))}
+              </div>
             </div>
-            
-            {/* Dishes List */}
-            <div className="space-y-2 w-full">
-              {cat.dishes.map((dish) => (
-                <DishRow key={dish.id} dish={dish} />
-              ))}
-            </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </div>
   );

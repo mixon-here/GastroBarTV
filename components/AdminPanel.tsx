@@ -26,8 +26,8 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ initialConfig, currentUser, onU
   // --- Screen Handlers ---
   const addScreen = (type: 'MENU' | 'PROMO') => {
     const newScreen: ScreenItem = type === 'MENU' 
-      ? { id: generateId(), type: 'MENU', duration: config.defaultDuration, categories: [] }
-      : { id: generateId(), type: 'PROMO', duration: config.defaultDuration, text: 'ЗАГОЛОВОК АКЦИИ', qrUrl: 'https://example.com' };
+      ? { id: generateId(), type: 'MENU', duration: config.defaultDuration, contentScale: 1, categories: [] }
+      : { id: generateId(), type: 'PROMO', duration: config.defaultDuration, contentScale: 1, text: 'ЗАГОЛОВОК АКЦИИ', qrUrl: 'https://example.com' };
 
     setConfig(prev => ({ ...prev, screens: [...prev.screens, newScreen] }));
     setActiveScreenIndex(config.screens.length);
@@ -200,28 +200,42 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ initialConfig, currentUser, onU
                 <div className="max-w-4xl mx-auto">
                     {/* Screen Settings */}
                     <div className="bg-stone-800 rounded-xl p-6 mb-8 shadow-xl border border-stone-700">
-                        <div className="flex justify-between items-start mb-6">
-                            <h2 className="text-xl font-bold text-stone-200">Настройки экрана #{activeScreenIndex + 1}</h2>
-                            <button onClick={() => removeScreen(activeScreenIndex)} className="text-red-400 text-xs uppercase hover:text-red-300 hover:underline">Удалить экран</button>
-                        </div>
-                        <div className="grid grid-cols-2 gap-6">
+                        <div className="flex justify-between items-start mb-6 border-b border-stone-700 pb-4">
                             <div>
-                                <label className="block text-xs text-stone-500 uppercase font-bold mb-2">Тип экрана</label>
-                                <div className="py-2 px-4 bg-black/20 rounded border border-stone-700 text-stone-300 text-sm font-mono inline-block">{currentScreen.type}</div>
+                                <h2 className="text-xl font-bold text-stone-200">Настройки экрана #{activeScreenIndex + 1}</h2>
+                                <p className="text-xs text-stone-500 mt-1">Здесь настраивается время показа и размер контента</p>
                             </div>
+                            <button onClick={() => removeScreen(activeScreenIndex)} className="text-red-400 text-xs uppercase hover:text-red-300 hover:underline border border-red-900/50 px-3 py-1 rounded">Удалить экран</button>
+                        </div>
+                        
+                        {/* Rotation & Scale Controls */}
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6 bg-black/20 p-4 rounded-lg">
                             <div>
-                                <label className="block text-xs text-stone-500 uppercase font-bold mb-2">Длительность (секунды)</label>
+                                <label className="block text-xs text-yellow-600 uppercase font-bold mb-2">Длительность показа (сек)</label>
                                 <input 
                                     type="number" min="5" 
-                                    className="w-full bg-black/20 border border-stone-600 rounded p-2 focus:border-yellow-600 focus:outline-none text-stone-200"
+                                    className="w-full bg-stone-900 border border-stone-600 rounded p-2 focus:border-yellow-600 focus:outline-none text-stone-200 font-mono text-lg"
                                     value={currentScreen.duration}
                                     onChange={(e) => updateScreen(activeScreenIndex, { duration: parseInt(e.target.value) || 20 })}
                                 />
                             </div>
+                            <div className="md:col-span-2">
+                                <div className="flex justify-between mb-2">
+                                    <label className="block text-xs text-yellow-600 uppercase font-bold">Масштаб контента (Zoom)</label>
+                                    <span className="text-xs text-stone-400 font-mono">{(currentScreen.contentScale || 1).toFixed(2)}x</span>
+                                </div>
+                                <input 
+                                    type="range" min="0.5" max="1.5" step="0.05"
+                                    className="w-full h-2 bg-stone-700 rounded-lg appearance-none cursor-pointer accent-yellow-600"
+                                    value={currentScreen.contentScale || 1}
+                                    onChange={(e) => updateScreen(activeScreenIndex, { contentScale: parseFloat(e.target.value) })}
+                                />
+                                <p className="text-[10px] text-stone-500 mt-1">Используйте, если текст выходит за рамки экрана</p>
+                            </div>
                         </div>
 
                         {currentScreen.type === 'PROMO' && (
-                             <div className="mt-6 space-y-6">
+                             <div className="space-y-6">
                                 <div>
                                     <label className="block text-xs text-stone-500 uppercase font-bold mb-2">Текст заголовка</label>
                                     <textarea 
