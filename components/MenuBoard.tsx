@@ -13,38 +13,40 @@ const DishRow: React.FC<{ dish: Dish }> = ({ dish }) => {
 
   if (dish.isHalfPortion) {
     if (!isNaN(weightNum)) {
-      displayWeight = `${weightNum}/${Math.round(weightNum / 2)}г`;
+      // Added spacing around the slash
+      displayWeight = `${weightNum} / ${Math.round(weightNum / 2)}г`;
     } else {
-      displayWeight = `${dish.weight}/½`;
+      displayWeight = `${dish.weight} / ½`;
     }
-    displayPrice = `${dish.price}/${Math.round(dish.price / 2)}`;
+    // Added spacing around the slash
+    displayPrice = `${dish.price} / ${Math.round(dish.price / 2)}`;
   }
 
   return (
     <div className="flex items-end justify-between py-1 mb-2 w-full">
-      {/* Name Section - Bebas Neue */}
+      {/* Name Section - Oswald Bold - Milky Color - Slightly Smaller */}
       <div className="shrink-0 max-w-[55%]">
-        <span className="text-[3.5vh] font-display font-medium tracking-widest text-[#F2F0E6] uppercase leading-none drop-shadow-md">
+        <span className="text-[3.3vh] font-display font-bold tracking-wide text-[#E4E2DD] uppercase leading-none drop-shadow-md block pt-1">
           {dish.name}
         </span>
       </div>
 
       {/* Dots Leader */}
-      <div className="grow mx-3 mb-2 dots-leader opacity-30 relative top-[-0.6vh]"></div>
+      <div className="grow mx-3 mb-2 dots-leader opacity-20 relative top-[-0.6vh]"></div>
       
-      {/* Price & Weight Section - Fixed Width Columns for alignment */}
+      {/* Price & Weight Section */}
       <div className="shrink-0 flex items-baseline justify-end whitespace-nowrap">
-        {/* Weight Column - Fixed Width */}
-        <div className="w-[14vh] text-right mr-[1vh]">
-            <span className="text-[2.6vh] text-stone-300 font-bold font-sans tracking-tight">
+        {/* Weight Column - Fixed Width - Milky Grey */}
+        <div className="w-[16vh] text-right mr-[1vh]">
+            <span className="text-[2.2vh] text-[#9ca3af] font-display font-medium tracking-normal uppercase">
               {displayWeight}
             </span>
         </div>
         
-        {/* Price Column - Fixed Width */}
-        <div className="w-[18vh] text-right">
-            <span className="text-[4vh] font-display font-bold text-yellow-500 leading-none tracking-wide">
-              {displayPrice} <span className="text-[3vh] text-yellow-500 font-bold align-top ml-1">₽</span>
+        {/* Price Column - Fixed Width - Slightly Smaller */}
+        <div className="w-[20vh] text-right">
+            <span className="text-[3.8vh] font-display font-bold text-yellow-500 leading-none tracking-wide">
+              {displayPrice} <span className="text-[2.8vh] text-yellow-500 font-bold align-top ml-1">₽</span>
             </span>
         </div>
       </div>
@@ -78,19 +80,19 @@ const MenuBoard: React.FC<MenuBoardProps> = ({ screen }) => {
       {/* Wrapper for Rotation and Scaling */}
       <div style={containerStyle}>
         <div className="w-[90%] flex flex-col justify-center h-auto max-h-full">
-          <div className="flex flex-col gap-[6vh]">
+          <div className="flex flex-col gap-[5vh]">
             {screen.categories.map((cat) => (
               <div key={cat.id} className="flex flex-col">
-                {/* Category Title - Bebas Neue */}
-                <div className="flex items-center mb-[2vh]">
-                    <div className="h-[4vh] w-1.5 bg-yellow-600 mr-4 rounded-full shadow-[0_0_10px_rgba(234,179,8,0.5)]"></div>
-                    <h2 className="text-[6.5vh] font-display font-normal text-[#F2F0E6] uppercase tracking-[0.1em] leading-none drop-shadow-xl">
+                {/* Category Title - Oswald - Milky Color */}
+                <div className="flex items-center mb-[1.5vh]">
+                    <div className="h-[4vh] w-1.5 bg-yellow-600 mr-4 rounded-sm shadow-[0_0_15px_rgba(234,179,8,0.6)]"></div>
+                    <h2 className="text-[6vh] font-display font-bold text-[#F2F0E6] uppercase tracking-[0.05em] leading-none drop-shadow-xl">
                     {cat.title}
                     </h2>
                 </div>
                 
                 {/* Dishes List */}
-                <div className="space-y-1 w-full">
+                <div className="space-y-0.5 w-full">
                   {cat.dishes.map((dish) => (
                     <DishRow key={dish.id} dish={dish} />
                   ))}
