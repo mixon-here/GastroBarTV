@@ -69,7 +69,8 @@ export const DEFAULT_CONFIG: AppConfig = {
       rotation: 0,
       displayFrequency: 2, // Show every 2nd loop
       text: 'ВСТУПИТЬ В ГРУППУ TELEGRAM\nГДЕ ВЫХОДЯТ ВСЕ ОБНОВЛЕНИЯ',
-      qrUrl: 'https://t.me/your_restaurant_channel'
+      qrUrl: 'https://t.me/your_restaurant_channel',
+      footerText: 'Наведите камеру телефона'
     }
   ]
 };

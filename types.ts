@@ -32,6 +32,7 @@ export interface PromoScreen extends BaseScreen {
   type: 'PROMO';
   text: string;
   qrUrl: string;
+  footerText?: string; // Optional footer text (e.g. "Scan me")
 }
 
 export type ScreenItem = MenuScreen | PromoScreen;

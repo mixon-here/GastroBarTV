@@ -12,7 +12,16 @@ export const getData = (): AppConfig => {
       // Migration: If users array is missing (old version), add it
       if (!data.users || !Array.isArray(data.users)) {
         data.users = DEFAULT_CONFIG.users;
-        // Optionally migrate old adminPassword if it exists, but simple reset is safer
+      }
+
+      // Migration: Add footerText to existing PROMO screens if missing
+      if (data.screens && Array.isArray(data.screens)) {
+        data.screens = data.screens.map((s: any) => {
+          if (s.type === 'PROMO' && typeof s.footerText === 'undefined') {
+            return { ...s, footerText: 'Наведите камеру телефона' };
+          }
+          return s;
+        });
       }
       
       return data;

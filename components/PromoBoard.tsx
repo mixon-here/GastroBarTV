@@ -6,7 +6,10 @@ interface PromoBoardProps {
 }
 
 const PromoBoard: React.FC<PromoBoardProps> = ({ screen }) => {
-  const qrImageSrc = `https://api.qrserver.com/v1/create-qr-code/?size=500x500&data=${encodeURIComponent(screen.qrUrl)}&color=000000&bgcolor=ffffff`;
+  // Only show QR if URL is present and not empty/whitespace
+  const hasQr = !!screen.qrUrl && screen.qrUrl.trim() !== '';
+  const qrImageSrc = hasQr ? `https://api.qrserver.com/v1/create-qr-code/?size=500x500&data=${encodeURIComponent(screen.qrUrl)}&color=000000&bgcolor=ffffff` : '';
+  
   const scale = screen.contentScale || 1;
   const rotation = screen.rotation || 0;
 
@@ -34,17 +37,21 @@ const PromoBoard: React.FC<PromoBoardProps> = ({ screen }) => {
             {screen.text}
           </h1>
           
-          <div className="inline-block p-[2vh] border-[0.5vh] border-stone-800 rounded-xl bg-white shadow-[0_0_30px_rgba(234,179,8,0.1)]">
-              <img 
-                  src={qrImageSrc} 
-                  alt="QR Code" 
-                  className="w-[35vh] h-[35vh] object-contain rendering-pixelated"
-              />
-          </div>
+          {hasQr && (
+            <div className="inline-block p-[2vh] border-[0.5vh] border-stone-800 rounded-xl bg-white shadow-[0_0_30px_rgba(234,179,8,0.1)]">
+                <img 
+                    src={qrImageSrc} 
+                    alt="QR Code" 
+                    className="w-[35vh] h-[35vh] object-contain rendering-pixelated"
+                />
+            </div>
+          )}
           
-          <p className="mt-[6vh] text-stone-400 text-[2.5vh] font-medium uppercase tracking-[0.2em] font-sans">
-              Наведите камеру телефона
-          </p>
+          {screen.footerText && (
+            <p className="mt-[6vh] text-stone-400 text-[2.5vh] font-medium uppercase tracking-[0.2em] font-sans">
+                {screen.footerText}
+            </p>
+          )}
         </div>
       </div>
     </div>

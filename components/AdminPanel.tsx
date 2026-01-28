@@ -27,7 +27,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ initialConfig, currentUser, onU
   const addScreen = (type: 'MENU' | 'PROMO') => {
     const newScreen: ScreenItem = type === 'MENU' 
       ? { id: generateId(), type: 'MENU', duration: config.defaultDuration, contentScale: 1, rotation: 0, displayFrequency: 1, categories: [] }
-      : { id: generateId(), type: 'PROMO', duration: config.defaultDuration, contentScale: 1, rotation: 0, displayFrequency: 1, text: 'ЗАГОЛОВОК АКЦИИ', qrUrl: 'https://example.com' };
+      : { id: generateId(), type: 'PROMO', duration: config.defaultDuration, contentScale: 1, rotation: 0, displayFrequency: 1, text: 'ЗАГОЛОВОК АКЦИИ', qrUrl: 'https://example.com', footerText: 'Наведите камеру телефона' };
 
     setConfig(prev => ({ ...prev, screens: [...prev.screens, newScreen] }));
     setActiveScreenIndex(config.screens.length);
@@ -272,12 +272,23 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ initialConfig, currentUser, onU
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-xs text-stone-500 uppercase font-bold mb-2">Ссылка (QR код генерируется автоматически)</label>
+                                    <label className="block text-xs text-stone-500 uppercase font-bold mb-2">Ссылка для QR (оставьте пустым для текста)</label>
                                     <input 
                                         type="text"
                                         className="w-full bg-black/20 border border-stone-600 rounded p-3 focus:border-yellow-600 focus:outline-none font-mono text-sm text-stone-200"
                                         value={(currentScreen as PromoScreen).qrUrl}
                                         onChange={(e) => updateScreen(activeScreenIndex, { qrUrl: e.target.value })}
+                                        placeholder="https://t.me/example"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-xs text-stone-500 uppercase font-bold mb-2">Подпись внизу (необязательно)</label>
+                                    <input 
+                                        type="text"
+                                        className="w-full bg-black/20 border border-stone-600 rounded p-3 focus:border-yellow-600 focus:outline-none font-mono text-sm text-stone-200"
+                                        value={(currentScreen as PromoScreen).footerText || ''}
+                                        onChange={(e) => updateScreen(activeScreenIndex, { footerText: e.target.value })}
+                                        placeholder="Наведите камеру телефона"
                                     />
                                 </div>
                              </div>

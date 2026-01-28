@@ -23,23 +23,30 @@ const DishRow: React.FC<{ dish: Dish }> = ({ dish }) => {
   return (
     <div className="flex items-end justify-between py-1 mb-2 w-full">
       {/* Name Section - Bebas Neue */}
-      <div className="shrink-0 max-w-[65%]">
+      <div className="shrink-0 max-w-[55%]">
         <span className="text-[3.5vh] font-display font-medium tracking-widest text-[#F2F0E6] uppercase leading-none drop-shadow-md">
           {dish.name}
         </span>
       </div>
 
-      {/* Dots Leader - Custom CSS */}
+      {/* Dots Leader */}
       <div className="grow mx-3 mb-2 dots-leader opacity-30 relative top-[-0.6vh]"></div>
       
-      {/* Price & Weight Section */}
-      <div className="shrink-0 flex items-center space-x-5 whitespace-nowrap">
-        <span className="text-[2.2vh] text-stone-400 font-medium font-sans mt-1">
-          {displayWeight}
-        </span>
-        <span className="text-[3.8vh] font-display font-bold text-yellow-500 leading-none tracking-wide">
-          {displayPrice} <span className="text-[2.5vh] text-stone-500 align-top">₽</span>
-        </span>
+      {/* Price & Weight Section - Fixed Width Columns for alignment */}
+      <div className="shrink-0 flex items-baseline justify-end whitespace-nowrap">
+        {/* Weight Column - Fixed Width */}
+        <div className="w-[14vh] text-right mr-[1vh]">
+            <span className="text-[2.6vh] text-stone-300 font-bold font-sans tracking-tight">
+              {displayWeight}
+            </span>
+        </div>
+        
+        {/* Price Column - Fixed Width */}
+        <div className="w-[18vh] text-right">
+            <span className="text-[4vh] font-display font-bold text-yellow-500 leading-none tracking-wide">
+              {displayPrice} <span className="text-[3vh] text-yellow-500 font-bold align-top ml-1">₽</span>
+            </span>
+        </div>
       </div>
     </div>
   );
