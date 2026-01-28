@@ -18,7 +18,6 @@ export interface BaseScreen {
   id: string;
   type: ScreenType;
   duration: number; // Duration in seconds
-  frequency?: number; // 1 = Every loop (default), 2 = Every 2nd loop, etc.
 }
 
 export interface MenuScreen extends BaseScreen {

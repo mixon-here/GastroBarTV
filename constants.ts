@@ -8,7 +8,6 @@ export const DEFAULT_CONFIG: AppConfig = {
       id: 'screen-1',
       type: 'MENU',
       duration: 20,
-      frequency: 1,
       categories: [
         {
           id: 'cat-1',
@@ -33,7 +32,6 @@ export const DEFAULT_CONFIG: AppConfig = {
       id: 'screen-2',
       type: 'MENU',
       duration: 20,
-      frequency: 1,
       categories: [
         {
           id: 'cat-3',
@@ -57,8 +55,7 @@ export const DEFAULT_CONFIG: AppConfig = {
     {
       id: 'screen-3',
       type: 'PROMO',
-      duration: 15,
-      frequency: 2, // Show every 2nd loop
+      duration: 20,
       text: 'ВСТУПИТЬ В ГРУППУ TELEGRAM\nГДЕ ВЫХОДЯТ ВСЕ ОБНОВЛЕНИЯ',
       qrUrl: 'https://t.me/your_restaurant_channel'
     }

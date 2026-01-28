@@ -7,20 +7,15 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Oswald:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
       body {
-        font-family: 'Inter', sans-serif; /* Default body font */
-        background-color: #0c0a09; /* Tailwind stone-950 */
+        font-family: 'Roboto Mono', monospace;
+        background-color: #0c0a09; /* Tailwind stone-950: Very dark warm gray/brown */
         color: #fff;
-        overflow: hidden;
+        overflow: hidden; /* Hide scrollbars for TV display */
       }
-      
-      h1, h2, h3, .font-heading {
-        font-family: 'Oswald', sans-serif;
-      }
-
-      /* Custom scrollbar for admin panel */
+      /* Custom scrollbar for admin panel only */
       .admin-scroll::-webkit-scrollbar {
         width: 8px;
       }
@@ -31,33 +26,14 @@
         background: #4b5563;
         border-radius: 4px;
       }
-
-      /* Dots Leader Utility */
+      /* Utility for dotted leader */
       .dots-leader {
         background-image: radial-gradient(circle, #57534e 2px, transparent 2.5px);
-        background-size: 10px 100%;
+        background-size: 12px 100%;
         background-position: bottom;
         background-repeat: repeat-x;
-        height: 12px;
-        margin-bottom: 7px;
-      }
-
-      /* Cinematic Fade In Animation */
-      @keyframes cinematicFadeIn {
-        0% {
-          opacity: 0;
-          transform: translateY(10px) scale(0.98);
-          filter: blur(2px);
-        }
-        100% {
-          opacity: 1;
-          transform: translateY(0) scale(1);
-          filter: blur(0);
-        }
-      }
-
-      .animate-cinematic {
-        animation: cinematicFadeIn 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        height: 12px; /* Height of the dots container */
+        margin-bottom: 6px; /* Align with text baseline visually */
       }
     </style>
   <script type="importmap">
