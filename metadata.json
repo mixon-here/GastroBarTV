@@ -1,0 +1,5 @@
+{
+  "name": "GastroBoard TV",
+  "description": "A digital signage solution for restaurant menus featuring rotating screens, QR code promotion, and an integrated admin panel for daily updates.",
+  "requestFramePermissions": []
+}
