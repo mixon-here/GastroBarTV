@@ -9,20 +9,36 @@ import Login from './components/Login';
 
 const TVDisplay: React.FC<{ config: AppConfig }> = ({ config }) => {
   const [currentScreenIndex, setCurrentScreenIndex] = useState(0);
+  const [currentRepeat, setCurrentRepeat] = useState(0);
   const navigate = useNavigate();
 
   useEffect(() => {
     if (config.screens.length === 0) return;
 
+    // Reset index if out of bounds (e.g. after deletion)
+    if (currentScreenIndex >= config.screens.length) {
+      setCurrentScreenIndex(0);
+      setCurrentRepeat(0);
+      return;
+    }
+
     const currentScreen = config.screens[currentScreenIndex];
     const duration = (currentScreen.duration || config.defaultDuration) * 1000;
+    const maxRepeats = currentScreen.repeatCount || 1;
 
-    const timer = setInterval(() => {
-      setCurrentScreenIndex((prev) => (prev + 1) % config.screens.length);
+    const timer = setTimeout(() => {
+      if (currentRepeat < maxRepeats - 1) {
+        // Increment repeat counter, stay on same screen
+        setCurrentRepeat((prev) => prev + 1);
+      } else {
+        // Reset repeats and move to next screen
+        setCurrentRepeat(0);
+        setCurrentScreenIndex((prev) => (prev + 1) % config.screens.length);
+      }
     }, duration);
 
-    return () => clearInterval(timer);
-  }, [currentScreenIndex, config]);
+    return () => clearTimeout(timer);
+  }, [currentScreenIndex, currentRepeat, config]);
 
   if (config.screens.length === 0) {
     return (
@@ -39,7 +55,8 @@ const TVDisplay: React.FC<{ config: AppConfig }> = ({ config }) => {
 
   return (
     <div className="h-screen w-screen bg-[#0c0a09] overflow-hidden relative selection:bg-yellow-500 selection:text-black">
-        <div key={screen.id} className="h-full w-full">
+        {/* Using key with repeat count forces re-render of components and animations when repeating the same screen */}
+        <div key={`${screen.id}-${currentRepeat}`} className="h-full w-full">
             {screen.type === 'MENU' ? (
                 <MenuBoard screen={screen as MenuScreen} />
             ) : (
@@ -48,7 +65,9 @@ const TVDisplay: React.FC<{ config: AppConfig }> = ({ config }) => {
         </div>
         
         <div className="absolute bottom-0 left-0 h-2 bg-stone-800 w-full z-10">
+            {/* Progress bar also needs unique key to restart animation on repeat */}
             <div 
+                key={`${screen.id}-${currentRepeat}-progress`}
                 className="h-full bg-yellow-600 transition-all ease-linear shadow-[0_0_10px_rgba(202,138,4,0.5)]"
                 style={{ 
                     width: '100%', 

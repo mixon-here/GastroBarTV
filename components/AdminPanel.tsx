@@ -26,8 +26,8 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ initialConfig, currentUser, onU
   // --- Screen Handlers ---
   const addScreen = (type: 'MENU' | 'PROMO') => {
     const newScreen: ScreenItem = type === 'MENU' 
-      ? { id: generateId(), type: 'MENU', duration: config.defaultDuration, contentScale: 1, rotation: 0, categories: [] }
-      : { id: generateId(), type: 'PROMO', duration: config.defaultDuration, contentScale: 1, rotation: 0, text: 'ЗАГОЛОВОК АКЦИИ', qrUrl: 'https://example.com' };
+      ? { id: generateId(), type: 'MENU', duration: config.defaultDuration, contentScale: 1, rotation: 0, repeatCount: 1, categories: [] }
+      : { id: generateId(), type: 'PROMO', duration: config.defaultDuration, contentScale: 1, rotation: 0, repeatCount: 1, text: 'ЗАГОЛОВОК АКЦИИ', qrUrl: 'https://example.com' };
 
     setConfig(prev => ({ ...prev, screens: [...prev.screens, newScreen] }));
     setActiveScreenIndex(config.screens.length);
@@ -184,6 +184,9 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ initialConfig, currentUser, onU
                         <div className="truncate flex items-center">
                             <span className="text-xs font-mono bg-black/30 px-1.5 py-0.5 rounded mr-3 text-stone-500">{idx + 1}</span>
                             <span className="text-sm font-medium text-stone-300">{screen.type === 'MENU' ? 'Меню' : 'Промо'}</span>
+                            {(screen.repeatCount && screen.repeatCount > 1) && (
+                                <span className="ml-auto text-[10px] bg-yellow-600/20 text-yellow-500 px-1.5 rounded border border-yellow-600/50">x{screen.repeatCount}</span>
+                            )}
                         </div>
                         <div className="flex space-x-1 opacity-0 group-hover:opacity-100 transition-opacity">
                              <button onClick={(e) => { e.stopPropagation(); moveScreen(idx, 'up'); }} className="text-stone-500 hover:text-white px-1">↑</button>
@@ -209,7 +212,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ initialConfig, currentUser, onU
                         </div>
                         
                         {/* Rotation & Scale Controls */}
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6 bg-black/20 p-4 rounded-lg">
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-6 bg-black/20 p-4 rounded-lg">
                             <div>
                                 <label className="block text-xs text-yellow-600 uppercase font-bold mb-2">Длительность (сек)</label>
                                 <input 
@@ -219,8 +222,18 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ initialConfig, currentUser, onU
                                     onChange={(e) => updateScreen(activeScreenIndex, { duration: parseInt(e.target.value) || 20 })}
                                 />
                             </div>
+                             <div>
+                                <label className="block text-xs text-yellow-600 uppercase font-bold mb-2">Повторов за цикл</label>
+                                <input 
+                                    type="number" min="1" 
+                                    className="w-full bg-stone-900 border border-stone-600 rounded p-2 focus:border-yellow-600 focus:outline-none text-stone-200 font-mono text-lg"
+                                    value={currentScreen.repeatCount || 1}
+                                    onChange={(e) => updateScreen(activeScreenIndex, { repeatCount: parseInt(e.target.value) || 1 })}
+                                />
+                                <p className="text-[9px] text-stone-500 mt-1">Сколько раз показать этот экран подряд</p>
+                            </div>
                             <div>
-                                <label className="block text-xs text-yellow-600 uppercase font-bold mb-2">Поворот экрана</label>
+                                <label className="block text-xs text-yellow-600 uppercase font-bold mb-2">Ориентация экрана</label>
                                 <select 
                                     className="w-full bg-stone-900 border border-stone-600 rounded p-2 focus:border-yellow-600 focus:outline-none text-stone-200"
                                     value={currentScreen.rotation || 0}

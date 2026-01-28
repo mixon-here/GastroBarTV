@@ -19,7 +19,8 @@ export interface BaseScreen {
   type: ScreenType;
   duration: number;
   contentScale?: number;
-  rotation?: 0 | 90 | 180 | 270; // New rotation field
+  rotation?: 0 | 90 | 180 | 270;
+  repeatCount?: number; // New field for playlist logic
 }
 
 export interface MenuScreen extends BaseScreen {
