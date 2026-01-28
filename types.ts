@@ -18,7 +18,8 @@ export interface BaseScreen {
   id: string;
   type: ScreenType;
   duration: number;
-  contentScale?: number; // New field for manual scaling
+  contentScale?: number;
+  rotation?: 0 | 90 | 180 | 270; // New rotation field
 }
 
 export interface MenuScreen extends BaseScreen {
@@ -39,7 +40,7 @@ export type UserRole = 'ADMIN' | 'OPERATOR';
 export interface User {
   id: string;
   username: string;
-  password: string; // Simple storage for this requirement
+  password: string;
   role: UserRole;
 }
 

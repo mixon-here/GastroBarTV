@@ -8,31 +8,44 @@ interface PromoBoardProps {
 const PromoBoard: React.FC<PromoBoardProps> = ({ screen }) => {
   const qrImageSrc = `https://api.qrserver.com/v1/create-qr-code/?size=500x500&data=${encodeURIComponent(screen.qrUrl)}&color=000000&bgcolor=ffffff`;
   const scale = screen.contentScale || 1;
+  const rotation = screen.rotation || 0;
+
+  const isPortrait = rotation === 90 || rotation === 270;
+
+  const containerStyle: React.CSSProperties = {
+    transform: `rotate(${rotation}deg) scale(${scale})`,
+    width: isPortrait ? '100vh' : '100vw',
+    height: isPortrait ? '100vw' : '100vh',
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    translate: '-50% -50%',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+  };
 
   return (
-    <div className="w-full h-full flex flex-col items-center justify-center bg-[#0c0a09] animate-fade-in overflow-hidden">
-      <div 
-        className="text-center w-[85%] flex flex-col items-center"
-        style={{ 
-            transform: `scale(${scale})`, 
-            transformOrigin: 'center center'
-        }}
-      >
-        <h1 className="text-[6vh] md:text-[8vh] font-display font-bold text-stone-100 mb-[6vh] leading-tight whitespace-pre-wrap uppercase tracking-wider">
-          {screen.text}
-        </h1>
-        
-        <div className="inline-block p-[2vh] border-[0.8vh] border-stone-800 rounded-3xl bg-white shadow-2xl shadow-yellow-900/20">
-            <img 
-                src={qrImageSrc} 
-                alt="QR Code" 
-                className="w-[35vh] h-[35vh] object-contain rendering-pixelated"
-            />
+    <div className="w-screen h-screen flex flex-col items-center justify-center bg-[#0c0a09] animate-fade-in overflow-hidden bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-stone-900 to-black">
+      <div style={containerStyle}>
+        <div className="text-center w-[85%] flex flex-col items-center">
+          <h1 className="text-[7vh] font-display font-medium text-[#F2F0E6] mb-[6vh] leading-tight whitespace-pre-wrap uppercase tracking-wider drop-shadow-lg">
+            {screen.text}
+          </h1>
+          
+          <div className="inline-block p-[2vh] border-[0.5vh] border-stone-800 rounded-xl bg-white shadow-[0_0_30px_rgba(234,179,8,0.1)]">
+              <img 
+                  src={qrImageSrc} 
+                  alt="QR Code" 
+                  className="w-[35vh] h-[35vh] object-contain rendering-pixelated"
+              />
+          </div>
+          
+          <p className="mt-[6vh] text-stone-400 text-[2.5vh] font-medium uppercase tracking-[0.2em] font-sans">
+              Наведите камеру телефона
+          </p>
         </div>
-        
-        <p className="mt-[6vh] text-stone-500 text-[3vh] font-medium uppercase tracking-widest font-display">
-            Наведите камеру телефона
-        </p>
       </div>
     </div>
   );

@@ -26,8 +26,8 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ initialConfig, currentUser, onU
   // --- Screen Handlers ---
   const addScreen = (type: 'MENU' | 'PROMO') => {
     const newScreen: ScreenItem = type === 'MENU' 
-      ? { id: generateId(), type: 'MENU', duration: config.defaultDuration, contentScale: 1, categories: [] }
-      : { id: generateId(), type: 'PROMO', duration: config.defaultDuration, contentScale: 1, text: 'ЗАГОЛОВОК АКЦИИ', qrUrl: 'https://example.com' };
+      ? { id: generateId(), type: 'MENU', duration: config.defaultDuration, contentScale: 1, rotation: 0, categories: [] }
+      : { id: generateId(), type: 'PROMO', duration: config.defaultDuration, contentScale: 1, rotation: 0, text: 'ЗАГОЛОВОК АКЦИИ', qrUrl: 'https://example.com' };
 
     setConfig(prev => ({ ...prev, screens: [...prev.screens, newScreen] }));
     setActiveScreenIndex(config.screens.length);
@@ -203,7 +203,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ initialConfig, currentUser, onU
                         <div className="flex justify-between items-start mb-6 border-b border-stone-700 pb-4">
                             <div>
                                 <h2 className="text-xl font-bold text-stone-200">Настройки экрана #{activeScreenIndex + 1}</h2>
-                                <p className="text-xs text-stone-500 mt-1">Здесь настраивается время показа и размер контента</p>
+                                <p className="text-xs text-stone-500 mt-1">Здесь настраивается время показа, поворот и размер контента</p>
                             </div>
                             <button onClick={() => removeScreen(activeScreenIndex)} className="text-red-400 text-xs uppercase hover:text-red-300 hover:underline border border-red-900/50 px-3 py-1 rounded">Удалить экран</button>
                         </div>
@@ -211,7 +211,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ initialConfig, currentUser, onU
                         {/* Rotation & Scale Controls */}
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6 bg-black/20 p-4 rounded-lg">
                             <div>
-                                <label className="block text-xs text-yellow-600 uppercase font-bold mb-2">Длительность показа (сек)</label>
+                                <label className="block text-xs text-yellow-600 uppercase font-bold mb-2">Длительность (сек)</label>
                                 <input 
                                     type="number" min="5" 
                                     className="w-full bg-stone-900 border border-stone-600 rounded p-2 focus:border-yellow-600 focus:outline-none text-stone-200 font-mono text-lg"
@@ -219,9 +219,22 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ initialConfig, currentUser, onU
                                     onChange={(e) => updateScreen(activeScreenIndex, { duration: parseInt(e.target.value) || 20 })}
                                 />
                             </div>
-                            <div className="md:col-span-2">
+                            <div>
+                                <label className="block text-xs text-yellow-600 uppercase font-bold mb-2">Поворот экрана</label>
+                                <select 
+                                    className="w-full bg-stone-900 border border-stone-600 rounded p-2 focus:border-yellow-600 focus:outline-none text-stone-200"
+                                    value={currentScreen.rotation || 0}
+                                    onChange={(e) => updateScreen(activeScreenIndex, { rotation: parseInt(e.target.value) as any })}
+                                >
+                                    <option value={0}>0° (Горизонтально)</option>
+                                    <option value={90}>90° (Вертикально по час.)</option>
+                                    <option value={180}>180° (Перевернуто)</option>
+                                    <option value={270}>270° (Вертикально пр. час.)</option>
+                                </select>
+                            </div>
+                            <div>
                                 <div className="flex justify-between mb-2">
-                                    <label className="block text-xs text-yellow-600 uppercase font-bold">Масштаб контента (Zoom)</label>
+                                    <label className="block text-xs text-yellow-600 uppercase font-bold">Zoom (Масштаб)</label>
                                     <span className="text-xs text-stone-400 font-mono">{(currentScreen.contentScale || 1).toFixed(2)}x</span>
                                 </div>
                                 <input 
@@ -230,7 +243,6 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ initialConfig, currentUser, onU
                                     value={currentScreen.contentScale || 1}
                                     onChange={(e) => updateScreen(activeScreenIndex, { contentScale: parseFloat(e.target.value) })}
                                 />
-                                <p className="text-[10px] text-stone-500 mt-1">Используйте, если текст выходит за рамки экрана</p>
                             </div>
                         </div>
 
@@ -239,7 +251,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ initialConfig, currentUser, onU
                                 <div>
                                     <label className="block text-xs text-stone-500 uppercase font-bold mb-2">Текст заголовка</label>
                                     <textarea 
-                                        className="w-full h-24 bg-black/20 border border-stone-600 rounded p-3 focus:border-yellow-600 focus:outline-none font-mono text-sm text-stone-200"
+                                        className="w-full h-24 bg-black/20 border border-stone-600 rounded p-3 focus:border-yellow-600 focus:outline-none font-sans text-sm text-stone-200"
                                         value={(currentScreen as PromoScreen).text}
                                         onChange={(e) => updateScreen(activeScreenIndex, { text: e.target.value })}
                                     />

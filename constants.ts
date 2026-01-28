@@ -12,6 +12,7 @@ export const DEFAULT_CONFIG: AppConfig = {
       type: 'MENU',
       duration: 20,
       contentScale: 1,
+      rotation: 0,
       categories: [
         {
           id: 'cat-1',
@@ -37,6 +38,7 @@ export const DEFAULT_CONFIG: AppConfig = {
       type: 'MENU',
       duration: 20,
       contentScale: 1,
+      rotation: 0,
       categories: [
         {
           id: 'cat-3',
@@ -62,6 +64,7 @@ export const DEFAULT_CONFIG: AppConfig = {
       type: 'PROMO',
       duration: 20,
       contentScale: 1,
+      rotation: 0,
       text: 'ВСТУПИТЬ В ГРУППУ TELEGRAM\nГДЕ ВЫХОДЯТ ВСЕ ОБНОВЛЕНИЯ',
       qrUrl: 'https://t.me/your_restaurant_channel'
     }

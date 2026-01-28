@@ -7,16 +7,16 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
       body {
-        font-family: 'Roboto', sans-serif;
+        font-family: 'Montserrat', sans-serif;
         background-color: #0c0a09;
-        color: #fff;
+        color: #F2F0E6; /* Milky white */
         overflow: hidden;
       }
       h1, h2, h3, .font-display {
-        font-family: 'Oswald', sans-serif;
+        font-family: 'Bebas Neue', sans-serif;
       }
       .admin-scroll::-webkit-scrollbar {
         width: 8px;
@@ -28,13 +28,14 @@
         background: #4b5563;
         border-radius: 4px;
       }
+      /* Custom dotted leader */
       .dots-leader {
-        background-image: radial-gradient(circle, #57534e 2px, transparent 2.5px);
-        background-size: 8px 100%;
+        background-image: radial-gradient(circle, #57534e 1.5px, transparent 2px);
+        background-size: 6px 100%; /* Denser dots */
         background-position: bottom;
         background-repeat: repeat-x;
-        height: 12px;
-        margin-bottom: 7px; /* Fine-tune alignment with text baseline */
+        height: 10px;
+        margin-bottom: 6px;
       }
     </style>
   <script type="importmap">
